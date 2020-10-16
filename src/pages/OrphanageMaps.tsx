@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   StyleSheet,
@@ -13,17 +13,31 @@ import MapView, { Marker, PROVIDER_GOOGLE, Callout } from "react-native-maps";
 import mapMarker from "../images/map-marker.png";
 import { useNavigation } from "@react-navigation/native";
 import { RectButton } from "react-native-gesture-handler";
+import api from "../services/api";
+
+interface Orphanege {
+  id: number;
+  latitude: number;
+  longitude: number;
+  name: string;
+}
 
 export default function OrphangeMaps() {
-  
-  const {navigate} = useNavigation()
+  const [orphanges, setOrphanges] = useState<Orphanege[]>([]);
+  const { navigate } = useNavigation();
 
-  function hadleNavigateToDetails(){
-    navigate('OrphanageDetails');
+  useEffect(() => {
+    api.get("orphanages").then((response) => {
+      setOrphanges(response.data);
+    });
+  }, []);
+
+  function hadleNavigateToDetails(id: number) {
+    navigate("OrphanageDetails", { id });
   }
-  
-  function handleNavigateToOrphange(){
-    navigate('SelectMapPosition');
+
+  function handleNavigateToOrphange() {
+    navigate("SelectMapPosition");
   }
 
   return (
@@ -38,27 +52,35 @@ export default function OrphangeMaps() {
           longitudeDelta: 0.008,
         }}
       >
-        <Marker
-          icon={mapMarker}
-          calloutAnchor={{
-            x: 2.7,
-            y: 0.8,
-          }}
-          coordinate={{
-            latitude: -20.2580286,
-            longitude: -42.0295339,
-          }}
-        >
-          <Callout tooltip onPress={hadleNavigateToDetails}>
-            <View style={styles.calloutContainer}>
-              <Text style={styles.calloutText}>Lar das Meninas</Text>
-            </View>
-          </Callout>
-        </Marker>
+        {orphanges.map((orphange) => {
+          return (
+            <Marker
+              key={orphange.id}
+              icon={mapMarker}
+              calloutAnchor={{
+                x: 2.7,
+                y: 0.8,
+              }}
+              coordinate={{
+                latitude: orphange.latitude,
+                longitude: orphange.longitude,
+              }}
+            >
+              <Callout
+                tooltip
+                onPress={() => hadleNavigateToDetails(orphange.id)}
+              >
+                <View style={styles.calloutContainer}>
+                  <Text style={styles.calloutText}>{orphange.name}</Text>
+                </View>
+              </Callout>
+            </Marker>
+          );
+        })}
       </MapView>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>2 resultados</Text>
+        <Text style={styles.footerText}>{orphanges.length} locais encontrados</Text>
         <RectButton
           style={styles.createOrphanageButton}
           onPress={handleNavigateToOrphange}
