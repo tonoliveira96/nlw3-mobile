@@ -12,6 +12,7 @@ import MapView, { Marker, PROVIDER_GOOGLE, Callout } from "react-native-maps";
 
 import mapMarker from "../images/map-marker.png";
 import { useNavigation } from "@react-navigation/native";
+import { RectButton } from "react-native-gesture-handler";
 
 export default function OrphangeMaps() {
   
@@ -58,12 +59,12 @@ export default function OrphangeMaps() {
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>2 resultados</Text>
-        <TouchableOpacity
+        <RectButton
           style={styles.createOrphanageButton}
           onPress={handleNavigateToOrphange}
         >
           <Feather name="plus" size={20} color="#fff" />
-        </TouchableOpacity>
+        </RectButton>
       </View>
     </View>
   );
