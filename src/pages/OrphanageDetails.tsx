@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   },
 
   scheduleItemRed: {
-    backgroundColor: "#EDFFF6",
+    backgroundColor: "#FEf6f9",
     borderWidth: 1,
     borderColor: "#FFBCD4",
     borderRadius: 20,
